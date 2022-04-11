@@ -118,37 +118,7 @@
   	<?php include 'includes/footer.php'; ?>
 
 </div>
-<!-- ./wrapper -->
 
-<!-- Chart Data -->
-<?php
-  $months = array();
-  $sales = array();
-  for( $m = 1; $m <= 12; $m++ ) {
-    try{
-      $stmt = $conn->prepare("SELECT * FROM details LEFT JOIN sales ON sales.id=details.sales_id LEFT JOIN products ON products.id=details.product_id WHERE MONTH(sales_date)=:month AND YEAR(sales_date)=:year");
-      $stmt->execute(['month'=>$m, 'year'=>$year]);
-      $total = 0;
-      foreach($stmt as $srow){
-        $subtotal = $srow['price']*$srow['quantity'];
-        $total += $subtotal;    
-      }
-      array_push($sales, round($total, 2));
-    }
-    catch(PDOException $e){
-      echo $e->getMessage();
-    }
-
-    $num = str_pad( $m, 2, 0, STR_PAD_LEFT );
-    $month =  date('M', mktime(0, 0, 0, $m, 1));
-    array_push($months, $month);
-  }
-
-  $months = json_encode($months);
-  $sales = json_encode($sales);
-
-?>
-<!-- End Chart Data -->
 
 <?php $pdo->close(); ?>
 <?php include 'includes/scripts.php'; ?>
